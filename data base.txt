@@ -1,0 +1,14 @@
+
+"""
+CREATE TABLE public.user (
+    username varchar(64) NOT NULL,
+    password_hash varchar(64) NOT NULL,
+    email varchar(255) NOT NULL,
+    lastonline timestamp without time zone NOT NULL,
+    countryid integer NOT NULL,
+    registertime timestamp with time zone NOT NULL,
+    status varchar(32),
+    PRIMARY KEY (username)
+);
+"""
+
