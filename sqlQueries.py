@@ -29,9 +29,6 @@ def connectDatabase():
 def disconnectDatabase():
     dbConn.close()
 
-
-
-# return TRUE OR FALSE
 def userExists(username):
     SQL = """SELECT count(username) FROM public.User GROUP BY username HAVING (username) = %(username)s """
     data = {'username': username}
@@ -45,8 +42,6 @@ def userExists(username):
         else:
             return True
 
-
-# return TRUE OR FALSE
 def authenticateUser(username, password):
     SQL = """SELECT password_hash FROM public.User WHERE username = %(username)s"""
 
@@ -138,10 +133,6 @@ def searchUsername(searcher, query):
         print("searchUsername error: " + str(e))
         return []
 
-# request friendship with this query
-# username of person that is doing query
-# targetPerson is person that we are requesting friendship from
-
 fNone     = "Empty"
 fRequest  = "Request"
 fIgnore   = "Ignore"
@@ -153,17 +144,15 @@ def setFriendshipStatus(thisUsername, targetUsername, status):
 
     global friendStatus
 
-    # error checking
     if status not in friendStatus:
         raise Exception("Wrong status")
 
     arr = [thisUsername, targetUsername]
-    # sortiraj, da bo vedno v istem vrstnem redu
     arr.sort()
 
     callIndex = 0
 
-    i f(arr[1] == thisUsername):
+    if(arr[1] == thisUsername):
         callIndex = 1
 
     data = {
@@ -172,7 +161,6 @@ def setFriendshipStatus(thisUsername, targetUsername, status):
         'Status'  : status + "_" + str(callIndex)
     }
     print("status: " + status)
-    # najprej preverimo, če obstaja zapis
     SQL_exists = """SELECT * FROM public.friendship AS fs WHERE fs.Username_1 = %(UserOne)s AND fs.Username_2 = %(UserTwo)s"""
 
     recordExists = False
@@ -197,7 +185,6 @@ def setFriendshipStatus(thisUsername, targetUsername, status):
         SQL = """INSERT INTO public.friendship (Username_1, Username_2, Status)
 				 VALUES (%(UserOne)s, %(UserTwo)s, %(Status)s)"""
         print("insert")
-    # preverimo ce je status sploh pravi
 
     with dbConn.cursor() as curs:
 
@@ -209,7 +196,6 @@ def getFriendshipStatus(thisUsername, targetUsername):
     global fNone
 
     arr = [thisUsername, targetUsername]
-    # sortiraj, da bo vedno v istem vrstnem redu
     arr.sort()
 
     data = {
@@ -217,7 +203,6 @@ def getFriendshipStatus(thisUsername, targetUsername):
         'UserTwo' : arr[1]
     }
 
-    # najprej preverimo, če obstaja zapis
     SQL = """SELECT Username_1, Username_2, Status FROM public.friendship AS fs WHERE fs.Username_1 = %(UserOne)s AND fs.Username_2 = %(UserTwo)s"""
 
     with dbConn.cursor() as curs:
@@ -250,9 +235,6 @@ def getFriendshipStatus(thisUsername, targetUsername):
         else:
             raise Exception("WTF two records, something is not right man")
 
-# accept or ignore friend with this query
-# username of person that is doing accept/ignore to targetPerson
-# uses tables: user, friendship, participates, chatroom
 def acceptFriendship(thisUsername, targetPerson):
     global fAccepted
     setFriendshipStatus(thisUsername, targetPerson, fAccepted)
@@ -265,7 +247,6 @@ def requestFriendship(thisUsername, targetPerson):
     global fRequest
     setFriendshipStatus(thisUsername, targetPerson, fRequest)
 
-# gets list of all friends and also their status (friended, waitingYouForAccept, waitingHimForAccept)
 def getAllFriends(username):
 
     SQL = """SELECT Username_1, Username_2, Status FROM public.friendship 
@@ -285,39 +266,29 @@ def getAllFriends(username):
         print("getAllFriends exception: \n" + str(e))
         return []
 
-# ########################################################################
-# MESSAGING
-# ########################################################################
-# send message to room/friend, also save it to database
+
 def saveMessage(chatroomName, username, text, timestamp):
     pass
 
 def getMessages(chatroomName, username, from_timestamp, to_timestamp):
     pass
 
-# ########################################################################
-# ROOMS
-# #######################################################################
 
-# not an actual query, but useful function that converts
+
 def friendshipToRoomName(friend1, friend2):
     arr = [friend1, friend2]
     arr.sort()
     return arr[0] + "____" + arr[1]
 
 
-# uses tables: user, participates, chatroom
 def createRoom(username, roomName):
     pass
 
 
-# uses tables: user, participates, chatroom
 def joinRoom(username, roomName):
     pass
 
 
-# find rooms that are public
-# uses tables: chatroom
 def searchPublicRoom(username, query):
     pass
 
